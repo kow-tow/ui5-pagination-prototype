@@ -1,0 +1,98 @@
+---
+interface Props {
+    pageIndex: number
+    totalPage: number
+    id?: string
+}
+
+const { pageIndex, totalPage, id } = Astro.props
+const prevIsDisabled = totalPage == 0 || pageIndex == 0
+const nextIsDisabled = totalPage == 0 || pageIndex == totalPage - 1
+---
+
+<script>
+    function emit(self: HTMLSpanElement, e: PointerEvent) {
+        const target = e.target as HTMLElement
+        if (target && target.tagName === "UI5-BUTTON") {
+            self.dispatchEvent(
+                new CustomEvent<number>("pageIndexChange", {
+                    detail: Number.parseInt(target.dataset.to as string),
+                })
+            )
+        }
+    }
+    Reflect.set(window, "_paginationOnClick", emit)
+</script>
+<span
+    class="holy2-ui5-pagination"
+    onclick="_paginationOnClick(this, window.event)"
+    id={id}
+>
+    <ui5-button
+        design="Emphasized"
+        icon="navigation-left-arrow"
+        disabled={prevIsDisabled}
+        data-to={pageIndex - 1}
+    >
+    </ui5-button>
+    {
+        Array(totalPage)
+            .fill(null)
+            .map((n, i) => {
+                if (i === pageIndex)
+                    return (
+                        <ui5-button design="Emphasized" disabled>
+                            {i + 1}
+                        </ui5-button>
+                    )
+                if (
+                    Math.abs(i - pageIndex) <
+                        Math.max(5 - pageIndex, 6 - totalPage + pageIndex, 2) ||
+                    (i == 1 && pageIndex == 3) ||
+                    (i == totalPage - 2 && pageIndex == totalPage - 4)
+                )
+                    return (
+                        <ui5-button design="Default" data-to={i}>
+                            {i + 1}
+                        </ui5-button>
+                    )
+                if (i === 0)
+                    return (
+                        <ui5-button design="Default" data-to="0">
+                            1
+                        </ui5-button>
+                    )
+                if (i === totalPage - 1)
+                    return (
+                        <ui5-button design="Default" data-to={i}>
+                            {totalPage}
+                        </ui5-button>
+                    )
+                if (i === 1)
+                    return (
+                        <ui5-button design="Transparent" disabled>
+                            ...
+                        </ui5-button>
+                    )
+                if (i === totalPage - 2)
+                    return (
+                        <ui5-button design="Transparent" disabled>
+                            ...
+                        </ui5-button>
+                    )
+            })
+    }
+    <ui5-button
+        design="Emphasized"
+        icon="navigation-right-arrow"
+        disabled={nextIsDisabled}
+        data-to={totalPage - 1}
+    >
+    </ui5-button>
+</span>
+<style>
+    .holy2-ui5-pagination {
+        display: inline-flex;
+        gap: 4px;
+    }
+</style>

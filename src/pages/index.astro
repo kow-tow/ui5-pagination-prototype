@@ -1,0 +1,29 @@
+---
+import Layout from "../layouts/Layout.astro"
+import Pagination from "../components/Pagination.astro"
+
+const { index, totalPage } = Object.fromEntries(
+    Astro.url.searchParams.entries()
+)
+---
+
+<Layout title="test">
+    <main>
+        <Pagination
+            pageIndex={Number.parseInt(index) || 0}
+            totalPage={Number.parseInt(totalPage) || 36}
+            id="main-pagination"
+        />
+    </main>
+    <script>
+        const pagination = document.getElementById("main-pagination")
+        pagination &&
+            pagination.addEventListener("pageIndexChange", e => {
+                const search = new URLSearchParams(location.search)
+                search.set("index", `${(e as CustomEvent<number>).detail}`)
+                location.search = `${search}`
+            })
+    </script>
+</Layout>
+
+<style></style>
