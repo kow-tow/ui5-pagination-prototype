@@ -1,33 +1,26 @@
 ---
-interface Props {
+interface Props extends astroHTML.JSX.HTMLAttributes {
     pageIndex: number
     totalPage: number
-    id?: string
 }
-
-const { pageIndex, totalPage, id } = Astro.props
+const { pageIndex, totalPage, ...attrs } = Astro.props
 const prevIsDisabled = totalPage == 0 || pageIndex == 0
 const nextIsDisabled = totalPage == 0 || pageIndex == totalPage - 1
 ---
 
 <script>
-    function emit(self: HTMLSpanElement, e: PointerEvent) {
-        const target = e.target as HTMLElement
-        if (target && target.tagName === "UI5-BUTTON") {
-            self.dispatchEvent(
+    window.addEventListener("click", e => {
+        const target = e.target as HTMLElement | null
+        if (target?.tagName === "UI5-BUTTON") {
+            target.parentElement?.dispatchEvent(
                 new CustomEvent<number>("pageIndexChange", {
                     detail: Number.parseInt(target.dataset.to as string),
                 })
             )
         }
-    }
-    Reflect.set(window, "_paginationOnClick", emit)
+    })
 </script>
-<span
-    class="holy2-ui5-pagination"
-    onclick="_paginationOnClick(this, window.event)"
-    id={id}
->
+<span {...attrs}>
     <ui5-button
         design="Emphasized"
         icon="navigation-left-arrow"
@@ -91,7 +84,7 @@ const nextIsDisabled = totalPage == 0 || pageIndex == totalPage - 1
     </ui5-button>
 </span>
 <style>
-    .holy2-ui5-pagination {
+    span {
         display: inline-flex;
         gap: 4px;
     }
