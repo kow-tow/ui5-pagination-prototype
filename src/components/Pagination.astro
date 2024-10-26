@@ -35,7 +35,7 @@ const nextIsDisabled = totalPage == 0 || pageIndex == totalPage - 1
                 if (i === pageIndex)
                     return (
                         <ui5-button design="Emphasized" disabled>
-                            {i + 1}
+                            <>{i + 1}</>
                         </ui5-button>
                     )
                 if (
@@ -46,31 +46,31 @@ const nextIsDisabled = totalPage == 0 || pageIndex == totalPage - 1
                 )
                     return (
                         <ui5-button design="Default" data-to={i}>
-                            {i + 1}
+                            <>{i + 1}</>
                         </ui5-button>
                     )
                 if (i === 0)
                     return (
                         <ui5-button design="Default" data-to="0">
-                            1
+                            <>1</>
                         </ui5-button>
                     )
                 if (i === totalPage - 1)
                     return (
                         <ui5-button design="Default" data-to={i}>
-                            {totalPage}
+                            <>{totalPage}</>
                         </ui5-button>
                     )
                 if (i === 1)
                     return (
                         <ui5-button design="Transparent" disabled>
-                            ...
+                            <>...</>
                         </ui5-button>
                     )
                 if (i === totalPage - 2)
                     return (
                         <ui5-button design="Transparent" disabled>
-                            ...
+                            <>...</>
                         </ui5-button>
                     )
             })
