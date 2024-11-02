@@ -39,6 +39,7 @@ const nextIsDisabled = totalPage == 0 || pageIndex == totalPage - 1
                         </ui5-button>
                     )
                 if (
+                    totalPage < 8 ||
                     Math.abs(i - pageIndex) <
                         Math.max(5 - pageIndex, 6 - totalPage + pageIndex, 2) ||
                     (i == 1 && pageIndex == 3) ||
