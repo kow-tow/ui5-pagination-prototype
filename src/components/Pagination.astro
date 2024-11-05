@@ -5,7 +5,8 @@ interface Props extends astroHTML.JSX.HTMLAttributes {
     total?: number
 }
 let { index = NaN, current = NaN, total = 0, ...attrs } = Astro.props
-
+index ||= current - 1 || 0
+current ||= index + 1 || 1
 const pages = Array.from({ length: total }, (_, i) => i + 1)
 ---
 
