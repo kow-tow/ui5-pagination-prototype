@@ -7,7 +7,11 @@ interface Props extends astroHTML.JSX.HTMLAttributes {
 let { index = NaN, current = NaN, total = 0, ...attrs } = Astro.props
 index ||= current - 1 || 0
 current ||= index + 1 || 1
-const index_from_end = total - current
+if (current !== index - 1) {
+    console.error("不合法的current和index输入")
+    ;[index, current] = [0, 1]
+}
+const pages = Array.from({ length: total }, (_, i) => i + 1)
 ---
 
 <script>
@@ -16,7 +20,7 @@ const index_from_end = total - current
         if (target?.tagName === "UI5-BUTTON") {
             target.parentElement?.dispatchEvent(
                 new CustomEvent<number>("page-to", {
-                    detail: Number.parseInt(target.dataset.to as string) + 1,
+                    detail: Number.parseInt(target.dataset.to as string),
                 })
             )
         }
@@ -27,62 +31,64 @@ const index_from_end = total - current
         design="Emphasized"
         icon="navigation-left-arrow"
         disabled={total == 0 || index == 0}
-        data-to={index - 1}
+        data-to={current - 1}
     >
     </ui5-button>
     {
-        Array(total)
-            .fill(null)
-            .map((n, i) => {
-                if (i === index)
-                    return (
-                        <ui5-button design="Emphasized" disabled>
-                            {i + 1}
-                        </ui5-button>
-                    )
-                if (
-                    total < 8 ||
-                    Math.abs(i - index) <
-                        Math.max(5 - index, 5 - index_from_end, 2) ||
-                    (i == 1 && index == 3) ||
-                    (i == total - 2 && index_from_end == 3)
+        pages.map(p => {
+            if (p === current)
+                return (
+                    <ui5-button design="Emphasized" disabled>
+                        {p}
+                    </ui5-button>
                 )
-                    return (
-                        <ui5-button design="Default" data-to={i}>
-                            {i + 1}
-                        </ui5-button>
-                    )
-                if (i === 0)
-                    return (
-                        <ui5-button design="Default" data-to="0">
-                            1
-                        </ui5-button>
-                    )
-                if (i === total - 1)
-                    return (
-                        <ui5-button design="Default" data-to={i}>
-                            {total}
-                        </ui5-button>
-                    )
-                if (i === 1)
-                    return (
-                        <ui5-button design="Transparent" disabled>
-                            ...
-                        </ui5-button>
-                    )
-                if (i === total - 2)
-                    return (
-                        <ui5-button design="Transparent" disabled>
-                            ...
-                        </ui5-button>
-                    )
-            })
+            if (
+                total < 8 ||
+                Math.abs(p - current) <
+                    Math.max(
+                        pages.at(5)! - current,
+                        current - pages.at(-6)!,
+                        2
+                    ) ||
+                (p == pages.at(1) && current == pages.at(3)) ||
+                (p == pages.at(-2) && current == pages.at(-4))
+            )
+                return (
+                    <ui5-button design="Default" data-to={p}>
+                        {p}
+                    </ui5-button>
+                )
+            if (p === pages.at(0))
+                return (
+                    <ui5-button design="Default" data-to="1">
+                        1
+                    </ui5-button>
+                )
+            if (p === pages.at(-1))
+                return (
+                    <ui5-button design="Default" data-to={p}>
+                        {p}
+                    </ui5-button>
+                )
+            if (p === pages.at(1))
+                return (
+                    <ui5-button design="Transparent" disabled>
+                        ...
+                    </ui5-button>
+                )
+            if (p === pages.at(-2))
+                return (
+                    <ui5-button design="Transparent" disabled>
+                        ...
+                    </ui5-button>
+                )
+        })
     }
     <ui5-button
         design="Emphasized"
         icon="navigation-right-arrow"
         disabled={total == 0 || current == total}
-        data-to={index + 1}
+        data-to={current + 1}
     >
     </ui5-button>
 </span>
