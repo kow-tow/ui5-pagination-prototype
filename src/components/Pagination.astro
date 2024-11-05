@@ -7,7 +7,7 @@ interface Props extends astroHTML.JSX.HTMLAttributes {
 let { index = NaN, current = NaN, total = 0, ...attrs } = Astro.props
 index ||= current - 1 || 0
 current ||= index + 1 || 1
-if (current !== index - 1) {
+if (current !== index + 1) {
     console.error("不合法的current和index输入")
     ;[index, current] = [0, 1]
 }
